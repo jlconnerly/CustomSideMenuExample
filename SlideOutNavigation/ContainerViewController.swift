@@ -41,6 +41,7 @@ class ContainerViewController: UIViewController {
   var centerNavigationController: UINavigationController!
   var centerViewController: CenterViewController!
   var leftViewController: SidePanelViewController?
+  var rightViewController: SidePanelViewController?
   let centerPanelExpandedOffset: CGFloat = 90
   var currentState: SlideOutState = .bothCollapsed {
     didSet {
@@ -83,21 +84,6 @@ class ContainerViewController: UIViewController {
     sidePanelController.didMove(toParent: self)
   }
 
-  func animateLeftPanel(shouldExpand: Bool) {
-    if shouldExpand {
-      currentState = .leftPanelExpanded
-      animateCenterPanelXPosition(
-        targetPosition: centerNavigationController.view.frame.width
-          - centerPanelExpandedOffset)
-    } else {
-      animateCenterPanelXPosition(targetPosition: 0) { _ in
-        self.currentState = .bothCollapsed
-        self.leftViewController?.view.removeFromSuperview()
-        self.leftViewController = nil
-      }
-    }
-  }
-  
   func animateCenterPanelXPosition(
       targetPosition: CGFloat,
       completion: ((Bool) -> Void)? = nil) {
@@ -128,18 +114,64 @@ class ContainerViewController: UIViewController {
 extension ContainerViewController: CenterViewControllerDelegate {
   func toggleLeftPanel() {
     let notAlreadyExpanded = (currentState != .leftPanelExpanded)
-
+    
     if notAlreadyExpanded {
       addLeftPanelViewController()
     }
 
     animateLeftPanel(shouldExpand: notAlreadyExpanded)
-
+  }
+  
+  func animateLeftPanel(shouldExpand: Bool) {
+    if shouldExpand {
+      currentState = .leftPanelExpanded
+      animateCenterPanelXPosition(
+        targetPosition: centerNavigationController.view.frame.width
+          - centerPanelExpandedOffset)
+    } else {
+      animateCenterPanelXPosition(targetPosition: 0) { _ in
+        self.currentState = .bothCollapsed
+        self.leftViewController?.view.removeFromSuperview()
+        self.leftViewController = nil
+      }
+    }
   }
   
   func toggleRightPanel() {
-    
+    let notAlreadyExpanded = (currentState != .rightPanelExpanded)
+
+    if notAlreadyExpanded {
+      addRightPanelViewController()
+    }
+
+    animateRightPanel(shouldExpand: notAlreadyExpanded)
   }
+  
+  func addRightPanelViewController() {
+    guard rightViewController == nil else { return }
+
+    if let vc = UIStoryboard.rightViewController() {
+      vc.animals = Animal.allDogs()
+      addChildSidePanelController(vc)
+      rightViewController = vc
+    }
+  }
+
+  func animateRightPanel(shouldExpand: Bool) {
+    if shouldExpand {
+      currentState = .rightPanelExpanded
+      animateCenterPanelXPosition(
+        targetPosition: -centerNavigationController.view.frame.width
+          + centerPanelExpandedOffset)
+    } else {
+      animateCenterPanelXPosition(targetPosition: 0) { _ in
+        self.currentState = .bothCollapsed
+        self.rightViewController?.view.removeFromSuperview()
+        self.rightViewController = nil
+      }
+    }
+  }
+
   
   func collapseSidePanels() {
   
