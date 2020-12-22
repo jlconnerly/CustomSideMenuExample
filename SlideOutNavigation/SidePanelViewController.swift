@@ -29,9 +29,13 @@
 import UIKit
 
 class SidePanelViewController: UIViewController {
+  
+  // MARK: - IBOutlets & Properties
   @IBOutlet weak var tableView: UITableView!
   
   var animals: [Animal]!
+  var delegate: SidePanelViewControllerDelegate?
+
   
   enum CellIdentifiers {
     static let AnimalCell = "AnimalCell"
@@ -61,6 +65,8 @@ extension SidePanelViewController: UITableViewDataSource {
 
 extension SidePanelViewController: UITableViewDelegate {
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    let animal = animals[indexPath.row]
+    delegate?.didSelectAnimal(animal)
   }
 }
 

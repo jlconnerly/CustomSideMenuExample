@@ -36,19 +36,30 @@ protocol CenterViewControllerDelegate {
 }
 
 class CenterViewController: UIViewController {
+  
+  // MARK: - IBOutlets & Properties
   @IBOutlet weak var imageView: UIImageView!
   @IBOutlet weak var titleLabel: UILabel!
   @IBOutlet weak var creatorLabel: UILabel!
   
   var delegate: CenterViewControllerDelegate?
   
-  // MARK: Button actions  
+  // MARK: - IBActions & Methods
   @IBAction func kittiesTapped(_ sender: Any) {
     delegate?.toggleLeftPanel()
   }
   
   @IBAction func puppiesTapped(_ sender: Any) {
     delegate?.toggleRightPanel()
+  }
+}
+// MARK: - Extensions
+extension CenterViewController: SidePanelViewControllerDelegate {
+  func didSelectAnimal(_ animal: Animal) {
+    imageView.image = animal.image
+    titleLabel.text = animal.title
+    creatorLabel.text = animal.creator
+    delegate?.collapseSidePanels()
   }
 }
 
