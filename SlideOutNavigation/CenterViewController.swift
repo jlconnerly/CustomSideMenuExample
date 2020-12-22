@@ -28,6 +28,13 @@
 
 import UIKit
 
+// MARK: - Protocols
+protocol CenterViewControllerDelegate {
+  func toggleLeftPanel()
+  func toggleRightPanel()
+  func collapseSidePanels()
+}
+
 class CenterViewController: UIViewController {
   @IBOutlet weak var imageView: UIImageView!
   @IBOutlet weak var titleLabel: UILabel!
@@ -37,14 +44,11 @@ class CenterViewController: UIViewController {
   
   // MARK: Button actions  
   @IBAction func kittiesTapped(_ sender: Any) {
+    delegate?.toggleLeftPanel()
+
   }
   
   @IBAction func puppiesTapped(_ sender: Any) {
   }
 }
 
-protocol CenterViewControllerDelegate {
-  func toggleLeftPanel()
-  func toggleRightPanel()
-  func collapseSidePanels()
-}
